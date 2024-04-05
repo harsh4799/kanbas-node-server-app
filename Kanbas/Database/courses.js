@@ -15,7 +15,7 @@ export default [
     courseText: "Spring 2024 Semester Full Term Grad",
     startDate: "2023-01-10",
     endDate: "2023-05-15",
-    image: "machine_learning.jpeg",
+    image: "machine_learning.webp",
   },
   {
     _id: "CS103",
@@ -24,6 +24,6 @@ export default [
     courseText: "Spring 2024 Semester Full Term Grad",
     startDate: "2023-01-10",
     endDate: "2023-05-15",
-    image: "deep_learning.png",
+    image: "deep_learning.webp",
   },
 ];

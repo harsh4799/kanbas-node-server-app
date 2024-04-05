@@ -11,11 +11,14 @@ export default function AssignmentRoutes(app) {
 
   app.post("/api/courses/:cid/assignments", (req, res) => {
     const { cid } = req.params;
+    console.log(req.body)
     const newAssignmentData = {
       ...req.body,
       _id: new Date().getTime().toString(),
       course: cid,
     };
+    console.log("IN POST",newAssignmentData._id)
+
     db.assignments.push(newAssignmentData);
     res.status(201).send(newAssignmentData);
   });
@@ -30,6 +33,8 @@ export default function AssignmentRoutes(app) {
 
   app.put("/api/assignments/:aid", (req, res) => {
     const { aid } = req.params;
+    console.log(aid)
+    console.log(db.assignments)
     const assignmentIndex = db.assignments.findIndex(
       (assignment) => assignment._id === aid
     );
