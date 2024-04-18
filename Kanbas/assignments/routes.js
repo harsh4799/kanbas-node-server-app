@@ -1,51 +1,34 @@
 import db from "../Database/index.js";
+import * as dao from "./dao.js";
 
 export default function AssignmentRoutes(app) {
-  app.get("/api/courses/:cid/assignments", (req, res) => {
+  app.get("/api/courses/:cid/assignments", async (req, res) => {
     const { cid } = req.params;
-    const assignmentsData = db.assignments.filter(
-      (assignment) => assignment.course === cid
-    );
-    res.status(200).send(assignmentsData);
+    const assignments = await dao.getAssignments(cid);
+    res.send(assignments);
   });
 
-  app.post("/api/courses/:cid/assignments", (req, res) => {
+  app.post("/api/courses/:cid/assignments", async (req, res) => {
     const { cid } = req.params;
-    console.log(req.body)
-    const newAssignmentData = {
+    const newAssignment = {
       ...req.body,
-      _id: new Date().getTime().toString(),
       course: cid,
+      _id: new Date().getTime().toString(),
     };
-    console.log("IN POST",newAssignmentData._id)
-
-    db.assignments.push(newAssignmentData);
-    res.status(201).send(newAssignmentData);
+    const newAssi = await dao.createAssignment(newAssignment);
+    res.send(newAssignment);
   });
 
-  app.delete("/api/assignments/:aid", (req, res) => {
+  app.delete("/api/assignments/:aid", async (req, res) => {
     const { aid } = req.params;
-    db.assignments = db.assignments.filter(
-      (assignment) => assignment._id !== aid
-    );
-    res.status(200).send("Assignment deleted successfully!");
+    await dao.deleteAssignment(aid);
+    res.sendStatus(200);
   });
 
-  app.put("/api/assignments/:aid", (req, res) => {
+  app.put("/api/assignments/:aid", async (req, res) => {
     const { aid } = req.params;
-    console.log(aid)
-    console.log(db.assignments)
-    const assignmentIndex = db.assignments.findIndex(
-      (assignment) => assignment._id === aid
-    );
-    if (assignmentIndex !== -1) {
-      db.assignments[assignmentIndex] = {
-        ...db.assignments[assignmentIndex],
-        ...req.body,
-      };
-      res.status(200).send(db.assignments[assignmentIndex]);
-    } else {
-      res.status(404).send("Assignment not found!");
-    }
+    const assignmentIndex = db.assignments.findIndex((a) => a._id === aid);
+    const newAss = await dao.updateAssignment(aid, req.body);
+    res.send(newAss);
   });
 }
