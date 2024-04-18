@@ -1,43 +1,62 @@
-import Database from "../Database/index.js";
+import {
+  findAllCourses,
+  createCourse,
+  deleteCourse,
+  updateCourse,
+  findCourseById,
+} from "./dao.js";
 
 export default function CourseRoutes(app) {
-  app.get("/api/courses", (req, res) => {
-    const coursesData = Database.courses;
-    res.send(coursesData);
+  app.get("/api/courses", async (req, res) => {
+    try {
+      const courses = await findAllCourses();
+      res.json(courses);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   });
 
-  app.post("/api/courses", (req, res) => {
-    const newCourse = {
-      ...req.body,
-      _id: new Date().getTime().toString(),
-    };
-    Database.courses.push(newCourse);
-    res.send(newCourse);
+  app.post("/api/courses", async (req, res) => {
+    try {
+      const newCourse = await createCourse(req.body);
+      res.status(201).json(newCourse);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   });
 
-  app.delete("/api/courses/:id", (req, res) => {
+  app.delete("/api/courses/:id", async (req, res) => {
     const { id } = req.params;
-    Database.courses = Database.courses.filter((course) => course._id !== id);
-    res.sendStatus(204);
+    try {
+      await deleteCourse(id);
+      res.sendStatus(204);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   });
 
-  app.put("/api/courses/:id", (req, res) => {
+  app.put("/api/courses/:id", async (req, res) => {
     const { id } = req.params;
     const updatedCourse = req.body;
-    Database.courses = Database.courses.map((course) =>
-      course._id === id ? { ...course, ...updatedCourse } : course
-    );
-    res.sendStatus(204);
+    try {
+      await updateCourse(id, updatedCourse);
+      res.sendStatus(204);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   });
 
-  app.get("/api/courses/:id", (req, res) => {
+  app.get("/api/courses/:id", async (req, res) => {
     const { id } = req.params;
-    const foundCourse = Database.courses.find((course) => course._id === id);
-
-    if (!foundCourse) {
-      res.status(404).send("Cannot find Course!");
-      return;
+    try {
+      const course = await findCourseById(id);
+      if (!course) {
+        res.status(404).send("Cannot find Course!");
+        return;
+      }
+      res.json(course);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-    res.send(foundCourse);
   });
 }
