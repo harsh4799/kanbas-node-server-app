@@ -14,7 +14,7 @@ const app = express();
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:3000",
+    origin: "https://statuesque-croquembouche-3077f5.netlify.app",
   })
 );
 
