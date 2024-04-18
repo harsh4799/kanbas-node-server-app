@@ -53,6 +53,7 @@ export default function UserRoutes(app) {
     const user = await dao.findUserByCredentials(username, password);
     if (user) {
       req.session.currentUser = user;
+      console.log(req.session);
       res.json(user);
     } else {
       res.sendStatus(401);
@@ -65,6 +66,7 @@ export default function UserRoutes(app) {
   };
 
   const profile = async (req, res) => {
+    console.log(req.session);
     const currentUser = req.session.currentUser;
     if (!currentUser) {
       res.sendStatus(401);
