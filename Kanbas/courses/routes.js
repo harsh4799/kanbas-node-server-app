@@ -18,6 +18,7 @@ export default function CourseRoutes(app) {
 
   app.post("/api/courses", async (req, res) => {
     try {
+      delete req.body["_id"];
       const newCourse = await createCourse(req.body);
       res.status(201).json(newCourse);
     } catch (error) {

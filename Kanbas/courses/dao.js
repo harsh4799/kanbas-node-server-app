@@ -6,7 +6,7 @@ export const createCourse = (course) => {
 
 export const findAllCourses = () => Course.find();
 
-export const findCourseById = (courseId) => Course.findById(courseId);
+export const findCourseById = (courseId) => Course.find({ _id: courseId });
 
 export const updateCourse = (courseId, course) =>
   Course.updateOne({ _id: courseId }, { $set: course });
