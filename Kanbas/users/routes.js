@@ -27,9 +27,13 @@ export default function UserRoutes(app) {
   };
 
   const updateUser = async (req, res) => {
-    const { userId } = req.params;
-    const status = await dao.updateUser(userId, req.body);
-    res.json(status);
+    try {
+      const { userId } = req.params;
+      const status = await dao.updateUser(userId, req.body);
+      res.json(status);
+    } catch {
+      res.send(200);
+    }
   };
 
   const signup = async (req, res) => {
